@@ -1,6 +1,9 @@
 package br.com.brandao.tasks.usecase.gateway;
 
 import br.com.brandao.tasks.usecase.model.TaskDsRequestModel;
+import br.com.brandao.tasks.usecase.model.TaskResponseModel;
+
+import java.util.List;
 
 public interface TaskDsGateway {
 
@@ -8,5 +11,5 @@ public interface TaskDsGateway {
 
     void save(TaskDsRequestModel requestModel);
 
-    // TODO implementar restante do crud
+    List<TaskResponseModel> getAll();
 }

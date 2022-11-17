@@ -24,7 +24,7 @@ import static java.util.stream.Collectors.toList;
 
 @AnalyzeClasses(packages = "br.com.brandao.tasks",
         importOptions = { ImportOption.DoNotIncludeTests.class, ImportOption.DoNotIncludeJars.class })
-public class CleanArchictetureValidator {
+public class CleanArchitectureValidator {
 
     // entity
 

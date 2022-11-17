@@ -37,7 +37,7 @@ public class TaskRegisterInteractorTest {
     public void givenTask_whenTaskAlreadyExists_shouldFail() {
 
         LocalDate startDate = LocalDate.parse("2050-01-01");
-        String taskName = "Task that alreary was created";
+        String taskName = "Task that already was created";
 
         given(taskDsGateway.existsByName(taskName))
                 .willReturn(true);

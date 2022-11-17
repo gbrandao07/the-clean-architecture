@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = CleanArchitectureApplication.class)
 @AutoConfigureMockMvc
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-class TaskRegisterControllerTest {
+class TaskRecoverAllControllerTest {
 
     @Autowired
     private TaskDsGateway taskDsGateway;
@@ -28,50 +28,29 @@ class TaskRegisterControllerTest {
     private MockMvc mockMvc;
 
     @Test
-    void should_create_a_task() throws Exception {
+    void should_return_all_tasks() throws Exception {
 
         this.mockMvc.perform(MockMvcRequestBuilders
                 .post("/task")
-                .content("{\"name\": \"some task\",\"startDate\": \"2050-01-01\"}")
+                .content("{\"name\": \"some task1\",\"startDate\": \"2050-01-01\"}")
+                .contentType(APPLICATION_JSON)
+                .accept(APPLICATION_JSON));
+
+        this.mockMvc.perform(MockMvcRequestBuilders
+                .post("/task")
+                .content("{\"name\": \"some task2\",\"startDate\": \"2050-01-01\"}")
+                .contentType(APPLICATION_JSON)
+                .accept(APPLICATION_JSON));
+
+        this.mockMvc.perform(MockMvcRequestBuilders
+                .get("/tasks")
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.creationDate").exists());
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0]").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1]").exists());
 
-        assertThat("Should exist task", this.taskDsGateway.existsByName("some task"));
-
-    }
-
-    @Test
-    void should_not_create_a_task_that_already_exists() throws Exception {
-
-        this.mockMvc.perform(MockMvcRequestBuilders
-                .post("/task")
-                .content("{\"name\": \"some other task\",\"startDate\": \"2050-01-01\"}")
-                .contentType(APPLICATION_JSON)
-                .accept(APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.creationDate").exists());
-
-        this.mockMvc.perform(MockMvcRequestBuilders
-                .post("/task")
-                .content("{\"name\": \"some other task\",\"startDate\": \"2050-01-01\"}")
-                .contentType(APPLICATION_JSON)
-                .accept(APPLICATION_JSON))
-                .andExpect(status().is5xxServerError());
-
-
-    }
-
-    @Test
-    void should_not_create_a_task_with_startDate_less_than_currentDate() throws Exception {
-
-        this.mockMvc.perform(MockMvcRequestBuilders
-                .post("/task")
-                .content("{\"name\": \"a task\",\"startDate\": \"2000-01-01\"}")
-                .contentType(APPLICATION_JSON)
-                .accept(APPLICATION_JSON))
-                .andExpect(status().is5xxServerError());
+        assertThat("Should return tasks", taskDsGateway.getAll().size() == 2);
 
     }
 }
